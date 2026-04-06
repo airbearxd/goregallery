@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NUDES</title>
+    <style>
+      :root {
+        --bg: #000000;
+        --panel: #201522;
+        --line: #7a4a62;
+        --text: #f2e8d7;
+        --accent: #ca202f;
+        --accent-2: #ffe44f;
+        --button-text: #1b1518;
+        --shadow: #050304;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", Verdana, sans-serif;
+        color: var(--text);
+        background: #000;
+      }
+
+      .page {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 14px;
+      }
+
+      .banner {
+        border: 3px ridge #c8b295;
+        background: linear-gradient(180deg, #3f1520, #1a1117);
+        box-shadow: 0 0 0 3px #4b2834, 5px 5px 0 var(--shadow);
+        padding: 14px 18px;
+        text-align: center;
+      }
+
+      .banner h1 {
+        margin: 0;
+        font-family: "Times New Roman", serif;
+        font-size: clamp(2rem, 5vw, 4.2rem);
+        letter-spacing: 0.18em;
+        color: #fff0ca;
+        text-shadow: 2px 2px 0 #7a0010, 4px 4px 0 #000;
+      }
+
+      .tagline {
+        margin-top: 8px;
+        font-size: 0.92rem;
+        color: var(--accent-2);
+      }
+
+      .warning {
+        margin: 12px 0 16px;
+        border: 2px dashed var(--accent-2);
+        background: rgba(0, 0, 0, 0.45);
+        color: #fff3a7;
+        text-align: center;
+        padding: 7px 10px;
+        font-size: 0.9rem;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 180px 1fr 180px;
+        gap: 16px;
+        align-items: start;
+      }
+
+      .right-column {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .side-panel,
+      .gallery-shell {
+        border: 3px ridge #b19c84;
+        background: linear-gradient(180deg, rgba(37, 24, 32, 0.96), rgba(18, 12, 18, 0.98));
+        box-shadow: 5px 5px 0 var(--shadow);
+      }
+
+      .side-panel {
+        padding: 12px;
+      }
+
+      .side-title {
+        margin: 0 0 10px;
+        font-size: 0.9rem;
+        text-align: center;
+        color: var(--accent-2);
+        text-transform: uppercase;
+      }
+
+      .nav-button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px 8px;
+        border: 2px outset #f4dec0;
+        background: linear-gradient(180deg, #e7d4b5, #bca788);
+        color: var(--button-text);
+        font-weight: bold;
+        font-size: 0.95rem;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .nav-button:hover,
+      .nav-button:focus,
+      .nav-button.active {
+        background: linear-gradient(180deg, #fff1d7, #cfb188);
+        color: #7a0010;
+      }
+
+      .gallery-shell {
+        position: relative;
+        overflow: hidden;
+        padding: 14px;
+      }
+
+      .gallery-static {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+          repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.04) 0 1px,
+            rgba(0, 0, 0, 0) 1px 4px
+          );
+        opacity: 0.3;
+        pointer-events: none;
+      }
+
+      .gallery-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .gallery-head {
+        margin-bottom: 14px;
+        padding: 10px;
+        border: 2px solid var(--line);
+        background: linear-gradient(90deg, rgba(122, 74, 98, 0.35), rgba(0, 0, 0, 0.2));
+        text-align: center;
+      }
+
+      .gallery-head strong {
+        color: #ffffff;
+        letter-spacing: 0.12em;
+      }
+
+      .thumb-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .thumb {
+        border: 3px ridge #c4af91;
+        background: #0b0910;
+        padding: 6px;
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.7);
+      }
+
+      .placeholder {
+        aspect-ratio: 3 / 4;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid #463541;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.7)),
+          linear-gradient(135deg, #5d2331, #1b171e 55%, #575f65);
+      }
+
+      .placeholder img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center center;
+        display: block;
+        position: relative;
+        z-index: 2;
+        background: #08060a;
+      }
+
+      .placeholder.has-image::after,
+      .placeholder.has-image .slot-label {
+        display: none;
+      }
+
+      .placeholder::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), transparent 30%),
+          repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.08) 0 6px,
+            rgba(0, 0, 0, 0.18) 6px 12px
+          ),
+          repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.03) 0 6px,
+            rgba(0, 0, 0, 0.08) 6px 12px
+          );
+        filter: blur(1px);
+        opacity: 0.9;
+      }
+
+      .slot-label {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        background: rgba(0, 0, 0, 0.65);
+        color: #fff3d0;
+        font-size: 0.86rem;
+        line-height: 1.4;
+        padding: 10px 8px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .status-bar {
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid #6d5561;
+        font-size: 0.8rem;
+        color: #dbcbb6;
+        text-align: center;
+      }
+
+      .side-ad {
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .side-ad img {
+        width: 100%;
+        display: block;
+      }
+
+      .bottom-popup {
+        position: fixed;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: min(860px, calc(100vw - 40px));
+        z-index: 30;
+        background: transparent;
+      }
+
+      .bottom-popup[hidden] {
+        display: none;
+      }
+
+      .popup-inner {
+        position: relative;
+        display: block;
+        padding: 0;
+      }
+
+      .popup-banner {
+        min-height: 40px;
+        background: transparent;
+        overflow: hidden;
+      }
+
+      .popup-banner img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+      }
+
+      .popup-close {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 26px;
+        height: 26px;
+        padding: 0;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        background: rgba(0, 0, 0, 0.72);
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        line-height: 24px;
+        text-align: center;
+      }
+
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .thumb-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+        @media (max-width: 640px) {
+        .thumb-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="banner">
+        <h1>GOREGALLERY</h1>
+        <div class="tagline">THE BEST UNCENSORED CONTENT YOU CAN FIND ON THE INTERNET!</div>
+      </header>
+
+      <div class="warning">
+        WARNING: EXPLICIT CONTENT
+      </div>
+
+      <main class="layout">
+        <aside class="side-panel">
+          <h2 class="side-title">Menu</h2>
+          <a class="nav-button" href="index.html">HOME</a>
+          <a class="nav-button" href="#">FREE</a>
+          <a class="nav-button" href="#">U.S.A</a>
+          <a class="nav-button" href="#">3rd World</a>
+          <a class="nav-button active" href="nsfw.html">NUDES</a>
+          <a class="nav-button" href="#">OLD</a>
+          <a class="nav-button" href="#">RECENT</a>
+          <a class="nav-button" href="#">POLICE</a>
+        </aside>
+
+        <section class="gallery-shell">
+          <div class="gallery-static" aria-hidden="true"></div>
+
+          <div class="gallery-content">
+
+            <div class="thumb-grid">
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/6.png" alt="" /><div class="slot-label">MISSING IMAGE 06</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/3.png" alt="" /><div class="slot-label">MISSING IMAGE 03</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/11.png" alt="" /><div class="slot-label">MISSING IMAGE 11</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/9.png" alt="" /><div class="slot-label">MISSING IMAGE 09</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/1.png" alt="" /><div class="slot-label">MISSING IMAGE 01</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/13.png" alt="" /><div class="slot-label">MISSING IMAGE 13</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/4.png" alt="" /><div class="slot-label">MISSING IMAGE 04</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/8.png" alt="" /><div class="slot-label">MISSING IMAGE 08</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/2.png" alt="" /><div class="slot-label">MISSING IMAGE 02</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/12.png" alt="" /><div class="slot-label">MISSING IMAGE 12</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/5.png" alt="" /><div class="slot-label">MISSING IMAGE 05</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/10.png" alt="" /><div class="slot-label">MISSING IMAGE 10</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/7.png" alt="" /><div class="slot-label">MISSING IMAGE 07</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/14.png" alt="" /><div class="slot-label">MISSING IMAGE 10</div></div></article>
+              <article class="thumb"><div class="placeholder has-image"><img src="assets/nudes/15.png" alt="" /><div class="slot-label">MISSING IMAGE 07</div></div></article>
+            </div>
+
+            <div class="status-bar">
+              SEND VIDEO SUBMISSIONS TO GOREGALLERY@MAIL.COM
+            </div>
+          </div>
+        </section>
+
+        <div class="right-column">
+          <aside class="side-panel">
+            <h2 class="side-title">Extras</h2>
+            <a class="nav-button" href="#">DONATE</a>
+            <a class="nav-button" href="#">CONTACT</a>
+            <a class="nav-button" href="#">JOIN</a>
+            <a class="nav-button" href="#">SUBMIT</a>
+          </aside>
+
+          <div class="side-ad">
+            <img src="assets/nudes/ad2.png" alt="Side advertisement" />
+          </div>
+        </div>
+      </main>
+    </div>
+    <div class="bottom-popup" id="bottom-popup">
+      <div class="popup-inner">
+        <div class="popup-banner">
+          <img src="assets/nudes/ad1.gif" alt="Bottom advertisement" />
+        </div>
+        <button class="popup-close" type="button" id="close-popup">X</button>
+      </div>
+    </div>
+    <script>
+      const galleryImages = document.querySelectorAll(".placeholder img");
+      const closePopup = document.getElementById("close-popup");
+      const bottomPopup = document.getElementById("bottom-popup");
+
+      galleryImages.forEach((image) => {
+        image.addEventListener("error", () => {
+          image.parentElement.classList.remove("has-image");
+          image.remove();
+        });
+      });
+
+      closePopup.addEventListener("click", () => {
+        bottomPopup.hidden = true;
+      });
+    </script>
+  </body>
+</html>

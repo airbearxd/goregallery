@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GOREGALLERY.COM</title>
+    <style>
+      :root {
+        --bg: #000000;
+        --panel: #201522;
+        --panel-2: #31172b;
+        --line: #7a4a62;
+        --text: #f2e8d7;
+        --accent: #ca202f;
+        --accent-2: #ffe44f;
+        --button: #d1c1aa;
+        --button-text: #1b1518;
+        --shadow: #050304;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", Verdana, sans-serif;
+        color: var(--text);
+        background: #000;
+      }
+
+      .page {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 14px;
+      }
+
+      .banner {
+        border: 3px ridge #c8b295;
+        background: linear-gradient(180deg, #3f1520, #1a1117);
+        box-shadow: 0 0 0 3px #4b2834, 5px 5px 0 var(--shadow);
+        padding: 14px 18px;
+        text-align: center;
+      }
+
+      .banner h1 {
+        margin: 0;
+        font-family: "Times New Roman", serif;
+        font-size: clamp(2rem, 5vw, 4.2rem);
+        letter-spacing: 0.18em;
+        color: #fff0ca;
+        text-shadow: 2px 2px 0 #7a0010, 4px 4px 0 #000;
+      }
+
+      .tagline {
+        margin-top: 8px;
+        font-size: 0.92rem;
+        color: var(--accent-2);
+      }
+
+      .notice {
+        margin: 12px 0 16px;
+        border: 2px dashed var(--accent-2);
+        background: rgba(0, 0, 0, 0.45);
+        color: #fff3a7;
+        text-align: center;
+        padding: 7px 10px;
+        font-size: 0.9rem;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 180px 1fr 180px;
+        gap: 16px;
+        align-items: start;
+      }
+
+      .right-column {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .side-panel,
+      .gallery-shell {
+        border: 3px ridge #b19c84;
+        background: linear-gradient(180deg, rgba(37, 24, 32, 0.96), rgba(18, 12, 18, 0.98));
+        box-shadow: 5px 5px 0 var(--shadow);
+      }
+
+      .side-panel {
+        padding: 12px;
+      }
+
+      .side-ad {
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .side-ad img {
+        width: 100%;
+        display: block;
+      }
+
+      .side-title {
+        margin: 0 0 10px;
+        font-size: 0.9rem;
+        text-align: center;
+        color: var(--accent-2);
+        text-transform: uppercase;
+      }
+
+      .nav-button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px 8px;
+        border: 2px outset #f4dec0;
+        background: linear-gradient(180deg, #e7d4b5, #bca788);
+        color: var(--button-text);
+        font-weight: bold;
+        font-size: 0.95rem;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .nav-button:hover,
+      .nav-button:focus,
+      .nav-button.active {
+        background: linear-gradient(180deg, #fff1d7, #cfb188);
+        color: #7a0010;
+      }
+
+      .gallery-shell {
+        padding: 14px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .gallery-video-bg {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+        background: #000;
+      }
+
+      .gallery-video-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.02) 0%,
+            rgba(255, 255, 255, 0.12) 48%,
+            rgba(255, 255, 255, 0.02) 52%,
+            rgba(255, 255, 255, 0.02) 100%
+          ),
+          repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.06) 0 1px,
+            rgba(0, 0, 0, 0) 1px 4px
+          );
+        opacity: 0.5;
+        mix-blend-mode: screen;
+        animation: scanSweep 5s linear infinite;
+      }
+
+      #static-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        opacity: 0.5;
+        filter: contrast(1.4) brightness(0.9);
+      }
+
+      .gallery-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .gallery-head {
+        margin-bottom: 14px;
+        padding: 10px;
+        border: 2px solid var(--line);
+        background: linear-gradient(90deg, rgba(122, 74, 98, 0.35), rgba(0, 0, 0, 0.2));
+        text-align: center;
+      }
+
+      .gallery-head strong {
+        color: #ffffff;
+        letter-spacing: 0.12em;
+      }
+
+      .thumb-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .thumb {
+        border: 3px ridge #c4af91;
+        background: #0b0910;
+        padding: 6px;
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.7);
+      }
+
+      .thumb button,
+      .thumb .static-thumb {
+        display: block;
+        width: 100%;
+        border: 2px solid #463541;
+        background: #000;
+        padding: 0;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .thumb .static-thumb {
+        cursor: default;
+      }
+
+      .poster {
+        aspect-ratio: 16 / 9;
+        position: relative;
+        overflow: hidden;
+        background:
+          linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.7)),
+          linear-gradient(135deg, #7c1d28, #1a171c 55%, #575f65);
+      }
+
+      .poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .poster::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          repeating-linear-gradient(
+            0deg,
+            transparent 0,
+            transparent 3px,
+            rgba(255, 255, 255, 0.05) 4px
+          );
+        mix-blend-mode: screen;
+      }
+
+      .status-bar {
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid #6d5561;
+        font-size: 0.8rem;
+        color: #dbcbb6;
+        text-align: center;
+      }
+
+      @keyframes scanSweep {
+        0% {
+          transform: translateY(-55%);
+        }
+        100% {
+          transform: translateY(55%);
+        }
+      }
+
+      dialog {
+        width: min(900px, calc(100vw - 32px));
+        border: 4px ridge #d0b48d;
+        padding: 0;
+        background: #130f15;
+        color: var(--text);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+      }
+
+      dialog::backdrop {
+        background: rgba(0, 0, 0, 0.85);
+      }
+
+      .modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        background: linear-gradient(180deg, #4b1826, #26151d);
+        border-bottom: 2px solid #8b6571;
+      }
+
+      .modal-head strong {
+        letter-spacing: 0.12em;
+      }
+
+      .close-button {
+        border: 2px outset #ebd4b5;
+        background: linear-gradient(180deg, #e7d4b5, #c3ab89);
+        color: #201318;
+        font-weight: bold;
+        padding: 6px 10px;
+        cursor: pointer;
+      }
+
+      .video-wrap {
+        aspect-ratio: 16 / 9;
+        background: #000;
+      }
+
+      .video-wrap iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .modal-note {
+        padding: 10px 12px 14px;
+        font-size: 0.82rem;
+        color: #d9c7b5;
+      }
+
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .thumb-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .thumb-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="banner">
+        <h1>GOREGALLERY</h1>
+        <div class="tagline">THE BEST UNCENSORED CONTENT YOU CAN FIND ON THE INTERNET!</div>
+      </header>
+
+      <div class="notice">
+        WARNING: EXPLICIT CONTENT
+      </div>
+
+      <main class="layout">
+        <aside class="side-panel">
+          <h2 class="side-title">Menu</h2>
+          <a class="nav-button active" href="index.html">HOME</a>
+          <a class="nav-button" href="#">FREE</a>
+          <a class="nav-button" href="#">U.S.A</a>
+          <a class="nav-button" href="#">3rd World</a>
+          <a class="nav-button" href="nsfw.html">NUDES</a>
+          <a class="nav-button" href="#">OLD</a>
+          <a class="nav-button" href="#">RECENT</a>
+          <a class="nav-button" href="#">POLICE</a>
+        </aside>
+
+        <section class="gallery-shell">
+          <div class="gallery-video-bg" aria-hidden="true">
+            <canvas id="static-canvas"></canvas>
+          </div>
+
+          <div class="gallery-content">
+            <div class="gallery-head">
+              <strong>FEATURED VIDEOS</strong><br />
+              THE MOST VIEWED CONTENT FROM THIS WEEK!
+            </div>
+
+            <div class="thumb-grid">
+              <article class="thumb">
+                <button type="button" id="open-video">
+                  <div class="poster">
+                    <img src="assets/gallery/1.png" alt="Featured shortfilm thumbnail" />
+                  </div>
+                </button>
+              </article>
+
+              <article class="thumb">
+                <div class="static-thumb">
+                  <div class="poster">
+                    <img src="assets/gallery/2.png" alt="Thumbnail 2" />
+                  </div>
+                </div>
+              </article>
+
+              <article class="thumb">
+                <div class="static-thumb">
+                  <div class="poster">
+                    <img src="assets/gallery/3.png" alt="Thumbnail 3" />
+                  </div>
+                </div>
+              </article>
+
+              <article class="thumb">
+                <div class="static-thumb">
+                  <div class="poster">
+                    <img src="assets/gallery/4.png" alt="Thumbnail 4" />
+                  </div>
+                </div>
+              </article>
+
+              <article class="thumb">
+                <div class="static-thumb">
+                  <div class="poster">
+                    <img src="assets/gallery/5.png" alt="Thumbnail 5" />
+                  </div>
+                </div>
+              </article>
+
+              <article class="thumb">
+                <div class="static-thumb">
+                  <div class="poster">
+                    <img src="assets/gallery/6.png" alt="Thumbnail 6" />
+                  </div>
+                </div>
+              </article>
+
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/7.png" alt="Thumbnail 7" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/8.png" alt="Thumbnail 8" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/9.png" alt="Thumbnail 9" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/10.png" alt="Thumbnail 10" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/11.png" alt="Thumbnail 11" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/12.png" alt="Thumbnail 12" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/13.png" alt="Thumbnail 13" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/14.png" alt="Thumbnail 14" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/15.png" alt="Thumbnail 15" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/16.png" alt="Thumbnail 16" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/17.png" alt="Thumbnail 17" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/18.png" alt="Thumbnail 18" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/19.png" alt="Thumbnail 19" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/20.png" alt="Thumbnail 20" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/21.png" alt="Thumbnail 21" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/22.png" alt="Thumbnail 22" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/23.png" alt="Thumbnail 23" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/24.png" alt="Thumbnail 24" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/25.png" alt="Thumbnail 25" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/26.png" alt="Thumbnail 26" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/27.png" alt="Thumbnail 27" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/28.png" alt="Thumbnail 28" /></div></div></article>
+              <article class="thumb"><div class="static-thumb"><div class="poster"><img src="assets/gallery/29.png" alt="Thumbnail 29" /></div></div></article>
+            </div>
+
+            <div class="status-bar">
+              SEND VIDEO SUBMISSIONS TO GOREGALLERY@MAIL.COM
+            </div>
+          </div>
+        </section>
+
+        <div class="right-column">
+          <aside class="side-panel">
+            <h2 class="side-title">Extras</h2>
+            <a class="nav-button" href="#">DONATE</a>
+            <a class="nav-button" href="#">CONTACT</a>
+            <a class="nav-button" href="#">JOIN</a>
+            <a class="nav-button" href="#">SUBMIT</a>
+          </aside>
+
+          <div class="side-ad">
+            <img src="assets/gallery/ad1.png" alt="Side advertisement" />
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <dialog id="video-modal">
+      <div class="modal-head">
+        <strong>NOW PLAYING: STATIC ROOM</strong>
+        <button type="button" class="close-button" id="close-video">CLOSE</button>
+      </div>
+      <div class="video-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/aqz-KE-bpKQ?autoplay=1"
+          title="Featured shortfilm"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <div class="modal-note">
+        Placeholder video is linked for layout demo purposes. You can swap the embed URL later with your friend’s actual shortfilm.
+      </div>
+    </dialog>
+
+    <script>
+      const dialog = document.getElementById("video-modal");
+      const openButton = document.getElementById("open-video");
+      const closeButton = document.getElementById("close-video");
+      const staticCanvas = document.getElementById("static-canvas");
+      const staticContext = staticCanvas.getContext("2d", { alpha: false });
+
+      openButton.addEventListener("click", () => {
+        dialog.showModal();
+      });
+
+      closeButton.addEventListener("click", () => {
+        dialog.close();
+      });
+
+      dialog.addEventListener("click", (event) => {
+        const bounds = dialog.getBoundingClientRect();
+        const clickedOutside =
+          event.clientX < bounds.left ||
+          event.clientX > bounds.right ||
+          event.clientY < bounds.top ||
+          event.clientY > bounds.bottom;
+
+        if (clickedOutside) {
+          dialog.close();
+        }
+      });
+
+      function resizeStaticCanvas() {
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        const width = Math.max(160, Math.floor(staticCanvas.offsetWidth * ratio));
+        const height = Math.max(120, Math.floor(staticCanvas.offsetHeight * ratio));
+
+        if (staticCanvas.width !== width || staticCanvas.height !== height) {
+          staticCanvas.width = width;
+          staticCanvas.height = height;
+        }
+      }
+
+      function drawStaticFrame() {
+        resizeStaticCanvas();
+
+        const width = staticCanvas.width;
+        const height = staticCanvas.height;
+        const image = staticContext.createImageData(width, height);
+        const data = image.data;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const noise = Math.random() * 255;
+          data[i] = noise;
+          data[i + 1] = noise;
+          data[i + 2] = noise;
+          data[i + 3] = 255;
+        }
+
+        staticContext.putImageData(image, 0, 0);
+
+        staticContext.fillStyle = "rgba(255,255,255,0.09)";
+        staticContext.fillRect(0, Math.random() * height, width, 2 + Math.random() * 5);
+
+        staticContext.fillStyle = "rgba(0,0,0,0.16)";
+        for (let y = 0; y < height; y += 4) {
+          staticContext.fillRect(0, y, width, 1);
+        }
+
+        requestAnimationFrame(drawStaticFrame);
+      }
+
+      window.addEventListener("resize", resizeStaticCanvas);
+      resizeStaticCanvas();
+      drawStaticFrame();
+    </script>
+  </body>
+</html>
