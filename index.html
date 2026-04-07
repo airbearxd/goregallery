@@ -172,12 +172,22 @@
         animation: scanSweep 5s linear infinite;
       }
 
-      #static-canvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-        opacity: 0.5;
-        filter: contrast(1.4) brightness(0.9);
+      .gallery-static-image {
+        position: absolute;
+        inset: 0;
+        background-image:
+          radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.35) 0 1px, transparent 1px 100%),
+          radial-gradient(circle at 70% 40%, rgba(255, 255, 255, 0.25) 0 1px, transparent 1px 100%),
+          radial-gradient(circle at 30% 75%, rgba(255, 255, 255, 0.3) 0 1px, transparent 1px 100%),
+          repeating-linear-gradient(
+            0deg,
+            rgba(215, 215, 215, 0.17) 0 1px,
+            rgba(30, 30, 30, 0.18) 1px 2px,
+            rgba(85, 85, 85, 0.16) 2px 3px
+          );
+        background-size: 48px 48px, 64px 64px, 56px 56px, 4px 4px;
+        opacity: 0.55;
+        filter: contrast(1.35) brightness(0.85);
       }
 
       .gallery-content {
@@ -372,7 +382,7 @@
 
         <section class="gallery-shell">
           <div class="gallery-video-bg" aria-hidden="true">
-            <canvas id="static-canvas"></canvas>
+            <div class="gallery-static-image"></div>
           </div>
 
           <div class="gallery-content">
@@ -499,8 +509,6 @@
       const dialog = document.getElementById("video-modal");
       const openButton = document.getElementById("open-video");
       const closeButton = document.getElementById("close-video");
-      const staticCanvas = document.getElementById("static-canvas");
-      const staticContext = staticCanvas.getContext("2d", { alpha: false });
 
       openButton.addEventListener("click", () => {
         dialog.showModal();
@@ -523,49 +531,6 @@
         }
       });
 
-      function resizeStaticCanvas() {
-        const ratio = Math.min(window.devicePixelRatio || 1, 2);
-        const width = Math.max(160, Math.floor(staticCanvas.offsetWidth * ratio));
-        const height = Math.max(120, Math.floor(staticCanvas.offsetHeight * ratio));
-
-        if (staticCanvas.width !== width || staticCanvas.height !== height) {
-          staticCanvas.width = width;
-          staticCanvas.height = height;
-        }
-      }
-
-      function drawStaticFrame() {
-        resizeStaticCanvas();
-
-        const width = staticCanvas.width;
-        const height = staticCanvas.height;
-        const image = staticContext.createImageData(width, height);
-        const data = image.data;
-
-        for (let i = 0; i < data.length; i += 4) {
-          const noise = Math.random() * 255;
-          data[i] = noise;
-          data[i + 1] = noise;
-          data[i + 2] = noise;
-          data[i + 3] = 255;
-        }
-
-        staticContext.putImageData(image, 0, 0);
-
-        staticContext.fillStyle = "rgba(255,255,255,0.09)";
-        staticContext.fillRect(0, Math.random() * height, width, 2 + Math.random() * 5);
-
-        staticContext.fillStyle = "rgba(0,0,0,0.16)";
-        for (let y = 0; y < height; y += 4) {
-          staticContext.fillRect(0, y, width, 1);
-        }
-
-        requestAnimationFrame(drawStaticFrame);
-      }
-
-      window.addEventListener("resize", resizeStaticCanvas);
-      resizeStaticCanvas();
-      drawStaticFrame();
     </script>
   </body>
 </html>
