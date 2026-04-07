@@ -248,6 +248,39 @@
         text-align: center;
       }
 
+      .page-picker {
+        margin-top: 14px;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .page-button {
+        min-width: 34px;
+        padding: 6px 10px;
+        border: 2px outset #ebd4b5;
+        background: linear-gradient(180deg, #6f5a48, #3d2d22);
+        color: #f4e5cc;
+        font-weight: bold;
+        font-family: "Times New Roman", serif;
+        text-decoration: none;
+        text-align: center;
+        line-height: 1;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .page-button.active {
+        background: linear-gradient(180deg, #fff1d7, #cfb188);
+        color: #7a0010;
+      }
+
+      .page-button:hover,
+      .page-button:focus-visible {
+        background: linear-gradient(180deg, #fff1d7, #cfb188);
+        color: #7a0010;
+      }
+
       .side-ad {
         padding: 0;
         background: transparent;
@@ -370,6 +403,13 @@
               <article class="thumb"><div class="placeholder has-image"><img loading="lazy" decoding="async" src="assets/nudes/7.jpg" alt="" /><div class="slot-label">MISSING IMAGE 07</div></div></article>
               <article class="thumb"><div class="placeholder has-image"><img loading="lazy" decoding="async" src="assets/nudes/14.jpg" alt="" /><div class="slot-label">MISSING IMAGE 10</div></div></article>
               <article class="thumb"><div class="placeholder has-image"><img loading="lazy" decoding="async" src="assets/nudes/15.jpg" alt="" /><div class="slot-label">MISSING IMAGE 07</div></div></article>
+            </div>
+
+            <div class="page-picker" aria-label="Page selection">
+              <span class="page-button active" aria-current="page">1</span>
+              <span class="page-button">2</span>
+              <span class="page-button">3</span>
+              <span class="page-button" aria-hidden="true">&gt;</span>
             </div>
 
             <div class="status-bar">
