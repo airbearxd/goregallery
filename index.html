@@ -150,28 +150,6 @@
         background: #000;
       }
 
-      .gallery-video-bg::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.02) 0%,
-            rgba(255, 255, 255, 0.12) 48%,
-            rgba(255, 255, 255, 0.02) 52%,
-            rgba(255, 255, 255, 0.02) 100%
-          ),
-          repeating-linear-gradient(
-            0deg,
-            rgba(255, 255, 255, 0.06) 0 1px,
-            rgba(0, 0, 0, 0) 1px 4px
-          );
-        opacity: 0.5;
-        mix-blend-mode: screen;
-        animation: scanSweep 5s linear infinite;
-      }
-
       .gallery-static-image {
         position: absolute;
         inset: 0;
@@ -275,15 +253,6 @@
         font-size: 0.8rem;
         color: #dbcbb6;
         text-align: center;
-      }
-
-      @keyframes scanSweep {
-        0% {
-          transform: translateY(-55%);
-        }
-        100% {
-          transform: translateY(55%);
-        }
       }
 
       dialog {
